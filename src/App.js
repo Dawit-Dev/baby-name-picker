@@ -1,35 +1,80 @@
-import React from "react";
+import React, { useState } from "react";
 import names from "./babyNamesData.json";
-import { useState } from "react";
 import "./App.css";
-import DisplayNames from "./DisplayNames";
+import Favorites from "./Favorites";
+import CreateNames from "./CreateNames";
 
-const filterNames = (inputName) => {
-  return names.filter((babyName) => {
-    return babyName.name.toLowerCase().includes(inputName.toLowerCase());
-  });
-};
+function filterNames(input) {
+  return names.filter((name) =>
+    name.name.toLowerCase().includes(input.toLowerCase())
+  );
+}
 
-const App = () => {
+function App() {
   const [arrayOfNames, setArrayOfNames] = useState(names);
+  const [favoriteNames, setFavoriteNames] = useState([]);
+
+  function filterGender(input) {
+    return names.filter((gender) => gender.sex.toLowerCase() === input);
+  }
+
   return (
-    <div className="App">
-      <h1>Baby Names Picker</h1>
-      <form className="no-submit">
-        <input
-          type="text"
-          placeholder="Please enter your search here"
-          className="no-submit"
-          onChange={(e) => {
-            setArrayOfNames(filterNames(e.target.value));
-          }}
-        ></input>
-      </form>
-      <div className="App-body">
-        <DisplayNames names={arrayOfNames} />
-      </div>
+    <div>
+      <h1>
+        Baby <span className="name">Name</span> Picker
+      </h1>
+
+      <input
+        className="input"
+        type="text"
+        placeholder="Search here..."
+        onChange={(event) => {
+          setArrayOfNames(filterNames(event.target.value));
+        }}
+      ></input>
+      <button
+        className="all"
+        onClick={(e) => {
+          e.preventDefault();
+          setArrayOfNames(names);
+        }}
+      >
+        All
+      </button>
+      <button
+        className="female"
+        onClick={(e) => {
+          e.preventDefault();
+          setArrayOfNames(filterGender("f"));
+        }}
+      >
+        Female
+      </button>
+      <button
+        className="male"
+        onClick={(e) => {
+          e.preventDefault();
+          setArrayOfNames(filterGender("m"));
+        }}
+      >
+        Male
+      </button>
+
+      <Favorites
+        favoriteNames={favoriteNames}
+        setFavoriteNames={setFavoriteNames}
+        setArrayOfNames={setArrayOfNames}
+        arrayOfNames={arrayOfNames}
+      />
+
+      <CreateNames
+        favoriteNames={favoriteNames}
+        setFavoriteNames={setFavoriteNames}
+        setArrayOfNames={setArrayOfNames}
+        arrayOfNames={arrayOfNames}
+      />
     </div>
   );
-};
+}
 
 export default App;
